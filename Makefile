@@ -1,5 +1,5 @@
 CFLAGS=-std=c++11 -g
-SOURCES=TaroJiroDividing.cpp
+SOURCES=fillstring.cpp
 EXES=$(SOURCES:.cpp=)
 
 all: $(SOURCES) $(EXES)
