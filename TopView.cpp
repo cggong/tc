@@ -39,9 +39,6 @@ public:
     const int NA = 100;
     //base case
     if (ab.size() == 2) return "";
-    if (ab.size() == 3) {
-      cout << "here"; 
-    } 
     //induction
     //preprocessing
     for (int i = 0; i < nc; i++) { //loop within vector<string>
@@ -191,28 +188,41 @@ void firstTest() {
 
 void secondTest() {
   vector<string> A[] = { {"..47..",
-			"..74.."},
-		       {"bbb666",
-			".655X5",
-			"a65AA5",
-			"a65AA5",
-			"a65555"},
-		       {"aabbaaaaaaaaaaaaaaaaaa",
-			"aabbccccccccccccccaaaa",
-			"aab11111ccccccccccaaaa",
-			"aab12221ccccccccccaaaa",
-			"aab12221ccccccccccaaaa",
-			"aab12221ccccccccccaaaa",
-			"aab12221ccccccccccaaaa",
-			"aab12221ccccccccccaaaa",
-			"aab12221ddddddddddaaaa",
-			"aab13331DDDDDDDDDDaaaa",
-			"aab13331DDDDDDDDDDaaaa",
-			"aa.11111DDDDDDDDDDaaaa",
-			"aaaaaaaaaaaaaaaaaaaaaa"}
+			  "..74.."},
+			 {"bbb666",
+			  ".655X5",
+			  "a65AA5",
+			  "a65AA5",
+			  "a65555"},
+			 {"aabbaaaaaaaaaaaaaaaaaa",
+			  "aabbccccccccccccccaaaa",
+			  "aab11111ccccccccccaaaa",
+			  "aab12221ccccccccccaaaa",
+			  "aab12221ccccccccccaaaa",
+			  "aab12221ccccccccccaaaa",
+			  "aab12221ccccccccccaaaa",
+			  "aab12221ccccccccccaaaa",
+			  "aab12221ddddddddddaaaa",
+			  "aab13331DDDDDDDDDDaaaa",
+			  "aab13331DDDDDDDDDDaaaa",
+			  "aa.11111DDDDDDDDDDaaaa",
+			  "aaaaaaaaaaaaaaaaaaaaaa"},
+			 {"AAAAA",
+			  "bbbbA",
+			  "..ccA",
+			  "..ccA"},
+			 {"AAAAA",
+			  "bbbbA",
+			  "ddccA",
+			  "dzccA"}, 
+			 {"AAAbA",
+			  "bbbbA",
+			  "..ccA",
+			  "..ccA"}
   };
-  string B[] = {"ERROR!", "65AXab", "ERROR!"};
-  for (int i = 0; i < 3; i++)
+  string B[] = {"ERROR!", "65AXab", "ERROR!", "ERROR!",
+		"Abcdz", "ERROR!"};
+  for (int i = 0; i < 5; i++)
     judge(B[i],TopView::findOrder(A[i])); 
 } 
 
