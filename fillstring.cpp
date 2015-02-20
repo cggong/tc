@@ -1,52 +1,29 @@
 //SRM 650 DIV 1
 #include<iostream>
 #include<vector>
+#include<map>
 using namespace std;
 
 enum State { INIT, NC, A, B, AM, BM };
 
-class Machine {
-  State s;
-  int n;
-public:
-  Machine(): s(INIT), n(0) {}
-  void next(int c) {
-    State TT[][3] = {//B as 0, = as 1, A as 2
-      {B, NC, A}, //INIT
-      {B, NC, A}, //NC
-      {B, AM, A}, //A
-      {B, BM, A}, //B
-      {B, BM, A}, //AM
-      {B, AM, A}  //BM
-    };
-    int inc[][3] = {
-      {0, 0, 0}, //INIT
-      {0, 0, 0}, //NC
-      {0, 0, 1}, //A
-      {1, 0, 0}, //B
-      {1, 0, 0}, //AM
-      {0, 0, 1}  //BM
-    }
-    n += inc[s][c];
-    s = TT[s][c]; 
-  }
-  int count() {
-    return n;
-  } 
-};
-
 class TaroFillingAStringDiv1 {
 public:
-  int getNumber(int N, vector<int> position, string value) {
-    string s = new string(N, '=');
-    for (int i = 0; i < position.length(); i++) {
-      s[position[i] - 1] = value[i];
-    } 
-    Machine m;
-    for (auto c = s.begin(); c != s.end(); c++) {
-      m.next((*c) % 3);
+  static int getNumber(int N, vector<int> position, string value) {
+    map<int, char> L;
+    for (int i = 0; i < position.size(); i++)
+      L[position[i]] = value[i]; 
+    long long int prod = 1;
+    for (int i = 0; i < position.size(); i++) {
+      auto i1 = L.find(position[i]);
+      auto i2 = i1;
+      i2++; 
+      if ((i2 != L.end())
+	  && (((i2->first - i1->first)
+	       ^ (i2->second != i1->second))
+	      & 1))
+	prod *= i2->first - i1->first;
     }
-    return m.count(); 
+    return prod; 
   } 
 };
 
@@ -66,7 +43,15 @@ void test() {
     "ABBBBABABBAAABA",
     "ABAABBABBAABABBBBAAAABBABBBA",
   };
-  int d[] = {2, 1, 1, 43068480
+  int d[] = {2, 1, 1, 43068480};
+  for (int i = 0; i < 4; i++) {
+    cout << "Test: " << i << endl;
+    cout << "Correct answer: " << d[i] << endl;
+    int ans = TaroFillingAStringDiv1::getNumber(a[i], b[i], c[i]);
+    cout << "Program answer: " << ans << endl;
+    if (d[i] == ans) cout << "\033[1;34mSuccess!\033[0m " << endl;
+    else cout << "\033[1;Failed\033[0m " << endl;
+  } 
 } 
 
 int main(void) {
