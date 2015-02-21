@@ -1,5 +1,5 @@
 CFLAGS=-std=c++11 -g
-SOURCES=fillstr2.cpp
+SOURCES=byteland.cpp
 EXES=$(SOURCES:.cpp=)
 
 all: $(SOURCES) $(EXES)
