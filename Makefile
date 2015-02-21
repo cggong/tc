@@ -1,5 +1,5 @@
 CFLAGS=-std=c++11 -g
-SOURCES=fillstring.cpp
+SOURCES=fillstr2.cpp
 EXES=$(SOURCES:.cpp=)
 
 all: $(SOURCES) $(EXES)
