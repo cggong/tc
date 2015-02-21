@@ -1,74 +1,111 @@
 #include<vector>
 #include<set>
 #include<iostream>
+#include<algorithm>
+#include<iterator>
+#include<map>
 using namespace std;
 class TheKingsRoadsDiv2 {
 public:
-  static string weirdcase(int h, vector<int>& a, vector<int>& b) {
-    return "Incorrect"; 
+  static set<int> setDiff(set<int> a, set<int> b) {
+    set<int> c;
+    set_difference(a.begin(), a.end(), b.begin(), b.end(),
+		   inserter(c, c.end()));
+    return c; 
+  } 
+  static void eraseLeaves(map<int, set<int>>& adj, set<int>& leaves) {
+    for (auto it = adj.begin(); it != adj.end(); it++) {
+	  if (leaves.find(it->first) != leaves.end())
+	    adj.erase(it->first);
+	  else it->second = setDiff(it->second, leaves); 
+    }
+  }
+  static bool validRec(int h, map<int, set<int>>& adj, set<int> leaves) {
+    //validateSubTree* (* is matcher) function recursion
+    eraseLeaves(adj, leaves); 
+    return validSubTreeX(h - 1, adj);
+  }
+  static set<int> findNodes(map<int, set<int>>& adj, int deg) {
+    set<int> ret; 
+    for (auto it = adj.begin(); it != adj.end(); it++) {
+      if (it->second.size() == deg) ret.insert(it->first);
+    }
+    return ret; 
+  } 
+    
+  static bool validSubTree(int h, map<int, set<int>>& adj) {
+    if (h == 1) {
+      //base case
+      return true;
+    } 
+    else { 
+      //induction
+      auto leaves = findNodes(adj, 1);
+      if (leaves.size() != 1 << (h-1)) return false; 
+      return validRec(h, adj, leaves); 
+    } 
+  } 
+  static bool validSubTreeX(int h, map<int, set<int>>& adj) {
+    if (h == 2) {  
+      //base case
+      for (auto it = adj.begin(); it != adj.end(); it++) {
+	if (it->second.size() != 2) return "Incorrect"; 
+      }
+      return true; 
+    } else { 
+      //induction
+      set<int> leaves = findNodes(adj, 1); 
+      if (leaves.size() == 1 << (h - 1)) {
+	return validRec(h, adj, leaves); 
+      } else if (leaves.size() == (1 << (h-1)) - 1) {
+	//miss 1 leaf, it should have 2 neighbors.
+	set<int> two = findNodes(adj, 2); 
+	if (two.size() == 1) { 
+	  //if it connects to root, then 1 node has 2 nei.
+	  leaves.insert(*two.begin());
+	  return validRec(h, adj, leaves); 
+	} else if (two.size() == 2) { 
+	  //else, it and root has 2 nei.
+	  auto it = two.begin();
+	  set<int> l1(leaves);
+	  set<int> l2(leaves);
+	  map<int, set<int>> a1(adj);
+	  map<int, set<int>> a2(adj); 
+	  l1.insert(*it++);
+	  l2.insert(*it);
+	  return validRec(h, a1, l1) || validRec(h, a2, l2); 
+	} else return false; 
+      } else if (leaves.size() == (1 << (h-1)) - 2) {
+	set<int> two = findNodes(adj, 2); 
+	if (two.size() != 2) return false;
+	else {
+	  auto it = two.begin();
+	  leaves.insert(*it++);
+	  leaves.insert(*it);
+	  return validRec(h, adj, leaves); 
+	} 
+      } else return false; 
+    } 
   } 
   static string getAnswer(int h, vector<int> a, vector<int> b) {
-    set<int> adj[1025]; 
-    for (int i = 0; i < a.size(); i++) { 
+    map<int, set<int>> adj; 
+    for (int i = 1; i < a.size() + 1; i++) { 
       adj[a[i]].insert(b[i]);
       adj[b[i]].insert(a[i]);
     }
-    //three possibilities: 1/2 3 3 4 4 3 3..
-    //3 3 3 3 ...
-    //1 3 3 4 4...
-    //1 3 3 3 5 3...
-    //detect self loop
-    set<int> newedge; //newedge contains root and new edges
+    //eliminate self-loop
     set<int> loop; 
     for (int i = 1; i < a.size() + 1; i++) {
-      if (!(adj[i].size() & 1)) newedge.insert(i);
       auto it = adj[i].find(i); 
       if (it != adj[i].end()) { 
 	adj[i].erase(it);
 	loop.insert(i); 
       } 
     }
-    if (loop.size() * 2 + newedge.size() != 3) {
-      //either incorrect, or new edge contains root
-      if (newedge.size() == 1) return weirdcase(h, a, b); 
-      return "Incorrect";
-    } 
-    //eliminate newedge
-    auto it = newedge.begin(); 
-    int u = *it++; 
-    int w = *it; 
-    adj[u].erase(w);
-    adj[w].erase(u); 
-    //find root
-    int root; 
-    try { 
-      for (int i = 1; i < a.size() + 1; i++) {
-	if (adj[i].size() == 2) throw i;
-      }
-      return "Incorrect";
-    } catch (int i) {
-      root = i;
-    }
-    //depth
-    int d = h; 
-    //bfs
-    for (set<int> layer(&root, &root + 1),
-	   explored; layer.size() <= d; ) {
-      set<int> newlayer;
-      for (auto it = layer.begin(); it != layer.end(); it++) {
-	set<int> children; 
-	for (auto v = adj[*it].begin(); v != adj[*it].end(); v++) {
-	  if (explored.find(*v) != explored.end()) {
-	    children.insert(*v);
-	  }
-	}
-	if (children.size() != 2) return "Incorrect";
-	for (auto it = children.begin(); it != children.end(); it++) 
-	  newlayer.insert(*it);
-	explored.insert(*it);
-      }
-    }
-    return "Correct"; 
+    if (loop.size() > 1) return "Incorrect";
+    bool correct = loop.size() ? validSubTree(h, adj)
+      : validSubTreeX(h, adj);
+    return correct ? "Correct" : "Incorrect"; 
   } 
 }; 
 
@@ -95,7 +132,7 @@ void test() {
     "Correct",
     "Correct"
   }; 
-  for (int i = 3; i < 4; i++) {
+  for (int i = 0; i < 5; i++) { 
     cout << "Test " << i << endl;
     cout << "Input: " << endl; 
     auto ans = TheKingsRoadsDiv2::getAnswer(a[i], b[i], c[i]);
