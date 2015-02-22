@@ -1,3 +1,4 @@
+//SRM 650 DIV 2
 #include<vector>
 #include<set>
 #include<iostream>
@@ -21,6 +22,11 @@ public:
     }
   }
   static bool validRec(int h, map<int, set<int>>& adj, set<int> leaves) {
+    //validateSubTree* (* is matcher) function recursion
+    eraseLeaves(adj, leaves); 
+    return validSubTree(h - 1, adj);
+  }
+  static bool validXRec(int h, map<int, set<int>>& adj, set<int> leaves) {
     //validateSubTree* (* is matcher) function recursion
     eraseLeaves(adj, leaves); 
     return validSubTreeX(h - 1, adj);
@@ -56,7 +62,7 @@ public:
       //induction
       set<int> leaves = findNodes(adj, 1); 
       if (leaves.size() == 1 << (h - 1)) {
-	return validRec(h, adj, leaves); 
+	return validXRec(h, adj, leaves); 
       } else if (leaves.size() == (1 << (h-1)) - 1) {
 	//miss 1 leaf, it should have 2 neighbors.
 	set<int> two = findNodes(adj, 2); 
