@@ -11,19 +11,23 @@ public:
   static set<int> setDiff(set<int> a, set<int> b) {
     set<int> c;
     set_difference(a.begin(), a.end(), b.begin(), b.end(),
-		   inserter(c, c.end()));
+		   inserter(c, c.end())); 
     return c; 
-  } 
-  static void eraseLeaves(map<int, set<int>>& adj, set<int>& leaves) {
+  }
+  static void eraseLeaves(map<int, set<int>>& adj, set<int> leav) {
     for (auto it = adj.begin(); it != adj.end(); it++) {
-	  if (leaves.find(it->first) != leaves.end())
-	    adj.erase(it->first);
-	  else it->second = setDiff(it->second, leaves); 
+      prset(leav); 
+      if (leav.find(it->first) == leav.end())
+	it->second = setDiff(it->second, leav); 
     }
+    for (int i: leav)
+      adj.erase(i); 
+    adj.erase(0); 
   }
   static bool validRec(int h, map<int, set<int>>& adj, set<int> leaves) {
     //validateSubTree* (* is matcher) function recursion
-    eraseLeaves(adj, leaves); 
+    eraseLeaves(adj, leaves);
+    prset(leaves); 
     return validSubTree(h - 1, adj);
   }
   static bool validXRec(int h, map<int, set<int>>& adj, set<int> leaves) {
@@ -37,9 +41,18 @@ public:
       if (it->second.size() == deg) ret.insert(it->first);
     }
     return ret; 
+  }
+  static bool quantity(int h, map<int, set<int>>& adj, bool x) {
+    int sum = 0;
+    for (auto &it: adj) 
+      sum += it.second.size();
+    int l = sum >> 1;
+    int r = (1 << h) - 2 + x; 
+    return (l == r); 
   } 
     
   static bool validSubTree(int h, map<int, set<int>>& adj) {
+    if (!quantity(h, adj, false)) return false; 
     if (h == 1) {
       //base case
       return true;
@@ -52,10 +65,11 @@ public:
     } 
   } 
   static bool validSubTreeX(int h, map<int, set<int>>& adj) {
+    if (!quantity(h, adj, true)) return false; 
     if (h == 2) {  
       //base case
       for (auto it = adj.begin(); it != adj.end(); it++) {
-	if (it->second.size() != 2) return "Incorrect"; 
+	if (it->second.size() != 2) return false; 
       }
       return true; 
     } else { 
@@ -94,8 +108,8 @@ public:
     } 
   } 
   static string getAnswer(int h, vector<int> a, vector<int> b) {
-    map<int, set<int>> adj; 
-    for (int i = 1; i < a.size() + 1; i++) { 
+    map<int, set<int>> adj;
+    for (int i = 0; i < a.size(); i++) { 
       adj[a[i]].insert(b[i]);
       adj[b[i]].insert(a[i]);
     }
@@ -149,7 +163,19 @@ void test() {
   }    
 } 
 
+void testSD() {
+  set<int> a = {1, 2, 3, 4, 5, 6};
+  set<int> b = {1, 2, 9, 10};
+  a = TheKingsRoadsDiv2::setDiff(a, b);
+  for (int i: a)
+    cout << i << endl;
+  cout << "b: " << endl; 
+  for (int i: b)
+    cout << i << endl; 
+} 
+
 int main(void) {
+  //testSD(); 
   test();
   return 0;
 } 

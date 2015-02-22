@@ -1,9 +1,9 @@
 CFLAGS=-std=c++11 -g
-SOURCES=cart.cpp
+SOURCES=byteland.cpp
 EXES=$(SOURCES:.cpp=)
 
 all: $(SOURCES) $(EXES)
 
 $(EXES): $(SOURCES)
-	g++ $(CFLAGS) $(SOURCES) -o $@
+	g++ $(CFLAGS) -O0 $(SOURCES) -o $@
 	./$@
