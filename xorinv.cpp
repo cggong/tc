@@ -66,7 +66,13 @@ public:
     int lgN = 1;
     for (m = N; m >>= 1; lgN++);
     XorSeqSol::lgN = lgN; 
-    map<int, int> XorSeqSol::lowerBoundMap; 
+    map<int, int> XorSeqSol::lowerBoundMap;
+    //compute lowerbound upperbound helpers
+    map<int, vector<int>> numWithPrefix();
+    for (int layer = 0; layer < lgN; layer++) {
+      for (int i = 
+    } 
+    //search
     queue<int> unexplored(vector<int>{0, 1});
     while (!unexplored.empty()) {
       int n = unexplored.pop();

@@ -16,7 +16,6 @@ public:
   }
   static void eraseLeaves(map<int, set<int>>& adj, set<int> leav) {
     for (auto it = adj.begin(); it != adj.end(); it++) {
-      prset(leav); 
       if (leav.find(it->first) == leav.end())
 	it->second = setDiff(it->second, leav); 
     }
@@ -27,7 +26,6 @@ public:
   static bool validRec(int h, map<int, set<int>>& adj, set<int> leaves) {
     //validateSubTree* (* is matcher) function recursion
     eraseLeaves(adj, leaves);
-    prset(leaves); 
     return validSubTree(h - 1, adj);
   }
   static bool validXRec(int h, map<int, set<int>>& adj, set<int> leaves) {
@@ -176,6 +174,8 @@ void testSD() {
 
 int main(void) {
   //testSD(); 
-  test();
+  //test();
+  int i = 1 << -1; 
+  cout << i << endl; 
   return 0;
 } 

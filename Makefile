@@ -1,5 +1,5 @@
 CFLAGS=-std=c++11 -g
-SOURCES=byteland.cpp
+SOURCES=dnasort.cpp
 EXES=$(SOURCES:.cpp=)
 
 all: $(SOURCES) $(EXES)
